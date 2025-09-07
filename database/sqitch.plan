@@ -3,3 +3,4 @@
 %uri=https://github.com/thehappyidiot/save-my-music
 
 appschema 2025-09-03T03:38:59Z Meer Shah <meer@hey.com> # Add schema for all objects
+users [appschema] 2025-09-05T01:52:45Z Meer Shah <meer@hey.com> # Creates table to track users
