@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS app.users
 (
     id bigint DEFAULT random(1, 9223372036854775807),
     email character varying(320),
-    CONSTRAINT users_pkey PRIMARY KEY (id)
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    UNIQUE(email)
 );
 
 COMMIT;

@@ -2,8 +2,6 @@
 
 BEGIN;
 
-SELECT id, email 
-    FROM app.users
-    WHERE FALSE;
+DROP TABLE IF EXISTS app.users;
 
 COMMIT;

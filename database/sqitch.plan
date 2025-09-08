@@ -4,3 +4,5 @@
 
 appschema 2025-09-03T03:38:59Z Meer Shah <meer@hey.com> # Add schema for all objects
 users [appschema] 2025-09-05T01:52:45Z Meer Shah <meer@hey.com> # Creates table to track users
+spotify_schema 2025-09-07T19:09:04Z Meer Shah <meer@hey.com> # Schema for data from Spotify
+spotify_tables [spotify_schema users] 2025-09-07T19:12:56Z Meer Shah <meer@hey.com> # Create tables for Spotify

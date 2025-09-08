@@ -2,6 +2,8 @@
 
 BEGIN;
 
-DROP TABLE app.users;
+SELECT id, email 
+    FROM app.users
+    WHERE FALSE;
 
 ROLLBACK;
