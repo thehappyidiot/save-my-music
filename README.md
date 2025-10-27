@@ -9,7 +9,8 @@ Work in progress 🚧
 
 ## Stack
   - Go
-  - Prisma Postgres
+  - PostgreSQL
 
 ## Tools
-  - [Sqitch](https://github.com/sqitchers/sqitch)
+  - [Goose](https://github.com/pressly/goose)
+  - [sqlc](https://github.com/sqlc-dev/sqlc)
