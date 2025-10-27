@@ -4,3 +4,4 @@
 export $(grep -v '^#' ../.env | xargs)
 
 # Database Migrations:
+goose -dir ./database/schema postgres <connection_string> up
