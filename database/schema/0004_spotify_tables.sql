@@ -1,6 +1,6 @@
--- Deploy save-my-music:spotify_tables to pg
--- requires: spotify_schema
--- requires: users
+-- Create tables for Spotify
+
+-- +goose Up
 
 BEGIN;
 
@@ -118,5 +118,20 @@ CREATE TABLE spotify.playlist_items
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
+
+COMMIT;
+
+-- +goose Down
+
+BEGIN;
+
+DROP TABLE IF EXISTS spotify.playlist_items;
+DROP TYPE IF EXISTS spotify.item_type;
+DROP TABLE IF EXISTS spotify.episodes;
+DROP TYPE IF EXISTS spotify.show;
+DROP TABLE IF EXISTS spotify.tracks;
+DROP TYPE IF EXISTS spotify.artist;
+DROP TABLE IF EXISTS spotify.playlists;
+DROP TABLE IF EXISTS spotify.users;
 
 COMMIT;

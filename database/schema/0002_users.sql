@@ -1,5 +1,6 @@
--- Deploy save-my-music:users to pg
--- requires: appschema
+-- Creates table to track users
+
+-- +goose Up
 
 BEGIN;
 
@@ -12,3 +13,12 @@ CREATE TABLE IF NOT EXISTS app.users
 );
 
 COMMIT;
+
+-- +goose Down
+
+BEGIN;
+
+DROP TABLE IF EXISTS app.users;
+
+COMMIT;
+
