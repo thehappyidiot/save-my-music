@@ -4,8 +4,6 @@ One day you suddenly remember that one song that you never hear anymore. Why? Sp
 
 Work in progress 🚧
 
-  - [Stack](#Stack)
-
 ## Stack
   - Go
   - PostgreSQL
