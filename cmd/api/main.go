@@ -10,7 +10,7 @@ import (
 func main() {
 	smmServer := server.NewServer()
 
-	fmt.Print("Whoop whoop (that's the sound of my server)")
+	fmt.Println("Whoop whoop (that's the sound of my server)")
 
 	err := smmServer.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
