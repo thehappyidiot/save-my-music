@@ -5,4 +5,10 @@ export $(grep -v '^#' .env | xargs)
 
 # Database Migrations:
 goose up
-goose down
+goose down 
+
+# Generate SQLC:
+sqlc generate
+
+# Build and Run:
+go build -o smm cmd/api/main.go && ./smm
