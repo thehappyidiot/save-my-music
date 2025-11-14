@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"google.golang.org/api/idtoken"
+	"github.com/thehappyidiot/save-my-music/internal/util"
 )
 
 const TYPE = "Content-Type"
@@ -48,18 +48,14 @@ func (server *Server) getHealth(w http.ResponseWriter, req *http.Request) {
 
 func (server *Server) postLogin(w http.ResponseWriter, req *http.Request) {
 
-	err := req.ParseForm()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	idTokenString := req.FormValue("credential")
-
-	payload, err := idtoken.Validate(req.Context(), idTokenString, server.googleClientId)
+	payload, err := util.ValidateGoogleAuthRequest(req, server.googleClientId)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		http.Error(
+			w,
+			fmt.Sprintf("Login failed: %s", err),
+			http.StatusUnauthorized,
+		)
 		return
 	}
 
