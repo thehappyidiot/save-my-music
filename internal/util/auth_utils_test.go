@@ -2,7 +2,6 @@ package util
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -10,14 +9,11 @@ import (
 	"testing"
 )
 
-// TODO: Generate valid token without using actual token?
-const SAMPLE_JWT = ""
-
 func createSampleRequest() *http.Request {
 	request := httptest.NewRequest("POST",
 		"http://example.com",
 		bytes.NewReader([]byte(
-			fmt.Sprintf("credential=%s&g_csrf_token=sometoken", SAMPLE_JWT),
+			"g_csrf_token=sometoken",
 		)),
 	)
 	request.AddCookie(&http.Cookie{
@@ -75,19 +71,4 @@ func TestValidateCsrfMismatch(t *testing.T) {
 	}
 }
 
-/*
-*
-func TestValidateIdTokenValid(t *testing.T) {
-	request := createSampleRequest()
-
-	payload, err := validateIdToken(request, "clientid")
-
-	if err != nil {
-		t.Errorf("Expected: no error, got: %s", err)
-	}
-
-	actualName := fmt.Sprintf("%v", payload.Claims["name"])
-	if actualName != "May, James" {
-		t.Errorf("Expected: `May, James`, got: %s", actualName)
-	}
-} */
+//TODO: can we generate a sample token and test validateIdToken?
