@@ -10,5 +10,6 @@ goose down
 # Generate SQLC:
 sqlc generate
 
-# Build and Run:
+# Go:
+go test ./...
 go build -o smm cmd/api/main.go && ./smm
