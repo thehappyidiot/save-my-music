@@ -1,0 +1,2 @@
+Proper logging
+Proper error handling
