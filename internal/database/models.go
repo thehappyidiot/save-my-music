@@ -54,8 +54,15 @@ func (ns NullSpotifyItemType) Value() (driver.Value, error) {
 }
 
 type AppUser struct {
-	ID    int64
-	Email sql.NullString
+	ID         int64
+	GoogleSub  sql.NullString
+	Email      sql.NullString
+	PictureUrl interface{}
+	FullName   sql.NullString
+	GivenName  sql.NullString
+	FamilyName sql.NullString
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type SpotifyEpisode struct {

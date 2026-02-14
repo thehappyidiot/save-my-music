@@ -15,7 +15,7 @@ func ValidateGoogleAuthRequest(req *http.Request, googleClientId string) (*idtok
 	err := req.ParseForm()
 	if err != nil {
 		return &idtoken.Payload{}, fmt.Errorf(
-			"Bad request: %s", err,
+			"bad request: %s", err,
 		)
 	}
 
@@ -31,7 +31,7 @@ func validateCsrf(req *http.Request) error {
 	csrfTokenCookie := req.CookiesNamed(GOOGLE_CSRF_KEY)
 	if len(csrfTokenCookie) != 1 {
 		return fmt.Errorf(
-			"Request did not contain a unique CSRF token cookie - `%s`",
+			"request did not contain a unique CSRF token cookie - `%s`",
 			GOOGLE_CSRF_KEY,
 		)
 	}
@@ -39,14 +39,14 @@ func validateCsrf(req *http.Request) error {
 	csrfTokenBody := req.FormValue(GOOGLE_CSRF_KEY)
 	if csrfTokenBody == "" {
 		return fmt.Errorf(
-			"Request did not contain a CSRF token in body - `%s`",
+			"request did not contain a CSRF token in body - `%s`",
 			GOOGLE_CSRF_KEY,
 		)
 	}
 
 	if csrfTokenCookie[0].Value != csrfTokenBody {
 		return fmt.Errorf(
-			"Failed to verify double submit CSRF token",
+			"failed to verify double submit CSRF token",
 		)
 	}
 
@@ -60,9 +60,10 @@ func validateIdToken(req *http.Request, googleClientId string) (*idtoken.Payload
 
 	if err != nil {
 		return &idtoken.Payload{}, fmt.Errorf(
-			"Failed to validate idToken: %s", err,
+			"failed to validate idToken: %s", err,
 		)
 	}
 
 	return payload, nil
 }
+

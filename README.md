@@ -7,3 +7,6 @@ Work in progress 🚧
 ## Stack
   - Go
   - PostgreSQL
+
+## Credits
+See [CREDITS.md](CREDITS.md)

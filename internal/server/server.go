@@ -3,7 +3,6 @@ package server
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -28,7 +27,7 @@ func NewServer() *http.Server {
 	// Get config:
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
-		log.Fatal("Cannot parse environment variable `port` as int")
+		panic("Cannot parse environment variable `port` as int")
 	}
 
 	isDevelopment := false
