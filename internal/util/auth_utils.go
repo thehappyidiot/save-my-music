@@ -66,3 +66,4 @@ func validateIdToken(req *http.Request, googleClientId string) (*idtoken.Payload
 
 	return payload, nil
 }
+

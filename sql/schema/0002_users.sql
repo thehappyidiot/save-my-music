@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS app.users
     updated_at timestamptz NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id),
     UNIQUE(email),
-    UNIQUE(sub)
+    UNIQUE(google_sub)
 );
 
 COMMIT;
