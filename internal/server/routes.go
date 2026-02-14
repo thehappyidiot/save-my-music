@@ -56,7 +56,7 @@ func (server *Server) getHealth(w http.ResponseWriter, req *http.Request) {
 }
 
 func (server *Server) postLogin(w http.ResponseWriter, req *http.Request) {
-
+	//TODO: session/cookies
 	payload, err := util.ValidateGoogleAuthRequest(req, server.googleClientId)
 
 	if err != nil {
