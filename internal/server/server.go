@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/gorilla/sessions"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"github.com/thehappyidiot/save-my-music/internal/database"
@@ -21,6 +22,7 @@ type Server struct {
 	config         Config
 	dbQueries      *database.Queries
 	googleClientId string
+	sessionStore   *sessions.CookieStore
 }
 
 func NewServer() *http.Server {
@@ -48,6 +50,24 @@ func NewServer() *http.Server {
 		panic("Cannot find environment variable `GOOGLE_CLIENT_ID`")
 	}
 
+	sessionKey := os.Getenv("SESSION_KEY")
+	if sessionKey == "" {
+		panic("Cannot find environment variable `SESSION_KEY`")
+	}
+	domain := os.Getenv("DOMAIN")
+	if domain == "" {
+		panic("Cannot find environment varaible `DOMAIN`")
+	}
+
+	sessionStore := sessions.NewCookieStore([]byte(sessionKey))
+	sessionStore.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 7, // 7 days
+		HttpOnly: true,
+		Domain:   domain,
+		SameSite: http.SameSiteLaxMode,
+	}
+
 	server := Server{
 		config: Config{
 			port:          port,
@@ -55,6 +75,7 @@ func NewServer() *http.Server {
 		},
 		dbQueries:      database.New(db),
 		googleClientId: googleClientId,
+		sessionStore:   sessionStore,
 	}
 
 	httpServer := &http.Server{
