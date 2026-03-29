@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"strings"
 
 	"github.com/thehappyidiot/save-my-music/internal/database"
 	"github.com/thehappyidiot/save-my-music/internal/util"
@@ -30,24 +29,18 @@ var OPEN_ENDPOINTS = map[string]bool{
 	"/api/login":  true,
 	"/api/health": true,
 	"/app/login":  true,
+	"/api/logout": true,
 }
 
 func (server *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", server.getRoot)
-	mux.HandleFunc("GET /app/login", server.getLogin)
-	mux.HandleFunc("GET /api/health", server.getHealth)
-	mux.HandleFunc("POST /api/login", server.postLogin)
+	mux.HandleFunc("GET /app/login", server.getAppLogin)
+	mux.HandleFunc("GET /api/health", server.getApiHealth)
+	mux.HandleFunc("POST /api/login", server.postApiLogin)
+	mux.HandleFunc("GET /api/logout", server.getApiLogout)
 
-	if server.config.isDevelopment {
-		fmt.Print("Server is running in Development mode. Do NOT use in Production. Speak friend and enter: ")
-		var confirmation string
-		fmt.Scanln(&confirmation)
-		if "mellon" != strings.ToLower(confirmation) {
-			panic("You shall not pass 🧙")
-		}
-	}
 	return server.middlewareHandler(mux)
 }
 
@@ -79,7 +72,7 @@ func (server *Server) middlewareAuth(handler http.Handler) http.Handler {
 		session, err := server.sessionStore.Get(req, LOGIN_SESSION_NAME)
 		if err != nil {
 			fmt.Printf("Error while parsing existing session: %s\n", err)
-			session.IsNew = true // Treat it as a fresh session }
+			session.IsNew = true // Treat it as a fresh session
 		}
 
 		isAuthenticatedRaw := session.Values[AUTHENTICATED]
@@ -123,17 +116,17 @@ func (server *Server) getRoot(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (server *Server) getLogin(w http.ResponseWriter, req *http.Request) {
+func (server *Server) getAppLogin(w http.ResponseWriter, req *http.Request) {
 	http.ServeFile(w, req, "./frontend/login.html")
 }
 
-func (server *Server) getHealth(w http.ResponseWriter, req *http.Request) {
+func (server *Server) getApiHealth(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set(TYPE, TYPE_PLAIN)
 	io.WriteString(w, "OK")
 }
 
-func (server *Server) postLogin(w http.ResponseWriter, req *http.Request) {
+func (server *Server) postApiLogin(w http.ResponseWriter, req *http.Request) {
 	payload, err := util.ValidateGoogleAuthRequest(req, server.googleClientId)
 
 	if err != nil {
@@ -148,18 +141,7 @@ func (server *Server) postLogin(w http.ResponseWriter, req *http.Request) {
 	// Get user
 	_, err = server.dbQueries.GetUserBySub(req.Context(), util.StringToNullString(payload.Subject))
 
-	if err == sql.ErrNoRows {
-		// New user
-		server.dbQueries.UpsertUser(req.Context(), database.UpsertUserParams{
-			GoogleSub:  util.StringToNullString(payload.Subject),
-			Email:      util.InterfaceToNullString(payload.Claims["email"]),
-			PictureUrl: payload.Claims["picture"],
-			FullName:   util.InterfaceToNullString(payload.Claims["name"]),
-			GivenName:  util.InterfaceToNullString(payload.Claims["given_name"]),
-			FamilyName: util.InterfaceToNullString(payload.Claims["family_name"]),
-		})
-		return
-	} else if err != nil {
+	if err != sql.ErrNoRows && err != nil {
 		http.Error(
 			w,
 			fmt.Sprintf("Login failed: %s", err),
@@ -167,6 +149,15 @@ func (server *Server) postLogin(w http.ResponseWriter, req *http.Request) {
 		)
 		fmt.Println("Error while querying user data: ", err)
 	}
+
+	server.dbQueries.UpsertUser(req.Context(), database.UpsertUserParams{
+		GoogleSub:  util.StringToNullString(payload.Subject),
+		Email:      util.InterfaceToNullString(payload.Claims["email"]),
+		PictureUrl: payload.Claims["picture"],
+		FullName:   util.InterfaceToNullString(payload.Claims["name"]),
+		GivenName:  util.InterfaceToNullString(payload.Claims["given_name"]),
+		FamilyName: util.InterfaceToNullString(payload.Claims["family_name"]),
+	})
 
 	// Set cookies:
 	session, _ := server.sessionStore.Get(req, LOGIN_SESSION_NAME)
@@ -180,4 +171,18 @@ func (server *Server) postLogin(w http.ResponseWriter, req *http.Request) {
 	}
 
 	http.Redirect(w, req, "/", http.StatusSeeOther)
+}
+
+func (server *Server) getApiLogout(w http.ResponseWriter, req *http.Request) {
+	session, err := server.sessionStore.Get(req, LOGIN_SESSION_NAME)
+	if err != nil {
+		http.Error(w, INTERNAL_ERROR, http.StatusInternalServerError)
+		fmt.Printf("Error while fetching session store: %s\n", err)
+		return
+	}
+
+	session.Options.MaxAge = -1
+	session.Save(req, w)
+	
+	http.ServeFile(w, req, "./frontend/logout.html")
 }

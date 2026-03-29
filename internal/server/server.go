@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/sessions"
 	_ "github.com/joho/godotenv/autoload"
@@ -39,6 +40,16 @@ func NewServer() *http.Server {
 			panic("Cannot parse environment variable `is_development` as boolean")
 		}
 	}
+
+	if isDevelopment {
+		fmt.Print("Server is running in Development mode. Do NOT use in Production. Speak friend and enter: ")
+		var confirmation string
+		fmt.Scanln(&confirmation)
+		if "mellon" != strings.ToLower(confirmation) {
+			panic("You shall not pass 🧙")
+		}
+	}
+
 	dbURL := os.Getenv("DB_URL")
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
