@@ -21,7 +21,8 @@ SELECT
     given_name,
     family_name,
     created_at,
-    updated_at
+    updated_at,
+    spotify_id
 FROM 
     app.users u
 WHERE
@@ -41,6 +42,7 @@ func (q *Queries) GetUserBySub(ctx context.Context, googleSub sql.NullString) (A
 		&i.FamilyName,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SpotifyID,
 	)
 	return i, err
 }

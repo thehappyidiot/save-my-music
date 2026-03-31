@@ -63,6 +63,7 @@ type AppUser struct {
 	FamilyName sql.NullString
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	SpotifyID  sql.NullString
 }
 
 type SpotifyEpisode struct {
@@ -75,6 +76,8 @@ type SpotifyEpisode struct {
 	ReleaseDate       time.Time
 	RestrictionReason sql.NullString
 	Show              string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 type SpotifyPlaylist struct {
@@ -82,7 +85,8 @@ type SpotifyPlaylist struct {
 	PlaylistID  string
 	Name        string
 	Description sql.NullString
-	Created     time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 	IsDeleted   sql.NullBool
 }
 
@@ -114,12 +118,14 @@ type SpotifyTrack struct {
 	RestrictionReason sql.NullString
 	Name              string
 	IsLocal           sql.NullBool
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 type SpotifyUser struct {
 	SpotifyID   string
 	DisplayName sql.NullString
-	InternalID  int64
 	LastScan    sql.NullTime
-	Created     time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }

@@ -8,16 +8,10 @@ CREATE TABLE spotify.users
 (
     spotify_id character varying(32) NOT NULL,
     display_name character varying(32),
-    internal_id bigint NOT NULL,
     last_scan timestamp without time zone,
-    created timestamp with time zone NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (spotify_id),
-    UNIQUE (internal_id),
-    FOREIGN KEY (internal_id)
-        REFERENCES app.users (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
+    PRIMARY KEY (spotify_id)
 );
 
 CREATE TABLE spotify.playlists
@@ -26,7 +20,8 @@ CREATE TABLE spotify.playlists
     playlist_id character(22),
     name character varying(100) NOT NULL,
     description character varying(300),
-    created timestamp with time zone NOT NULL DEFAULT NOW(),
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     is_deleted boolean DEFAULT FALSE,
     PRIMARY KEY (playlist_id),
     FOREIGN KEY (owner)
@@ -56,6 +51,8 @@ CREATE TABLE spotify.tracks
     restriction_reason text,
     name text NOT NULL,
     is_local boolean,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     PRIMARY KEY (track_id)
 );
 COMMENT ON COLUMN spotify.tracks.isrc
@@ -87,6 +84,8 @@ CREATE TABLE spotify.episodes
     release_date date NOT NULL,
     restriction_reason text COLLATE pg_catalog."default",
     show spotify.show NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     CONSTRAINT episodes_pkey PRIMARY KEY (episode_id)
 );
 

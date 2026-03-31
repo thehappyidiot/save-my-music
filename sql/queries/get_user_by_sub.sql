@@ -9,7 +9,8 @@ SELECT
     given_name,
     family_name,
     created_at,
-    updated_at
+    updated_at,
+    spotify_id
 FROM 
     app.users u
 WHERE

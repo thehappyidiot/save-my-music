@@ -7,7 +7,8 @@ INSERT INTO app.users (
         given_name,
         family_name,
         created_at,
-        updated_at
+        updated_at,
+        spotify_id
     )
 VALUES (
         $1,
@@ -17,7 +18,8 @@ VALUES (
         $5,
         $6,
         NOW(),
-        NOW()
+        NOW(),
+        $7
     ) ON CONFLICT (google_sub) DO
 UPDATE
 SET email = $2,
@@ -25,5 +27,6 @@ SET email = $2,
     full_name = $4,
     given_name = $5,
     family_name = $6,
-    updated_at = NOW()
+    updated_at = NOW(),
+    spotify_id = $7
 RETURNING *;

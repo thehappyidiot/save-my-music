@@ -19,7 +19,8 @@ INSERT INTO app.users (
         given_name,
         family_name,
         created_at,
-        updated_at
+        updated_at,
+        spotify_id
     )
 VALUES (
         $1,
@@ -29,7 +30,8 @@ VALUES (
         $5,
         $6,
         NOW(),
-        NOW()
+        NOW(),
+        $7
     ) ON CONFLICT (google_sub) DO
 UPDATE
 SET email = $2,
@@ -37,8 +39,9 @@ SET email = $2,
     full_name = $4,
     given_name = $5,
     family_name = $6,
-    updated_at = NOW()
-RETURNING id, google_sub, email, picture_url, full_name, given_name, family_name, created_at, updated_at
+    updated_at = NOW(),
+    spotify_id = $7
+RETURNING id, google_sub, email, picture_url, full_name, given_name, family_name, created_at, updated_at, spotify_id
 `
 
 type UpsertUserParams struct {
@@ -48,6 +51,7 @@ type UpsertUserParams struct {
 	FullName   sql.NullString
 	GivenName  sql.NullString
 	FamilyName sql.NullString
+	SpotifyID  sql.NullString
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (AppUser, error) {
@@ -58,6 +62,7 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (AppUser
 		arg.FullName,
 		arg.GivenName,
 		arg.FamilyName,
+		arg.SpotifyID,
 	)
 	var i AppUser
 	err := row.Scan(
@@ -70,6 +75,7 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (AppUser
 		&i.FamilyName,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SpotifyID,
 	)
 	return i, err
 }

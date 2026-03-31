@@ -15,7 +15,13 @@ CREATE TABLE IF NOT EXISTS app.users
     family_name character varying(255),
     created_at timestamptz NOT NULL,
     updated_at timestamptz NOT NULL,
+    spotify_id character varying(32),
     CONSTRAINT users_pkey PRIMARY KEY (id),
+    FOREIGN KEY (spotify_id)
+        REFERENCES spotify.users (spotify_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
     UNIQUE(email),
     UNIQUE(google_sub)
 );
